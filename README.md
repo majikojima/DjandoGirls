@@ -27,7 +27,23 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
-URL:http://127.0.0.1:8000/
+URL:  
+[http://127.0.0.1:8000/]
+
+reference:  
+[https://tutorial.djangogirls.org/ja/django_models/]
+
+```bash
+$ python manage.py makemigrations blog
+
+$ python manage.py migrate blog
+```
+
+reference:  
+[https://tutorial.djangogirls.org/ja/django_admin/]
+
+URL:
+[http://127.0.0.1:8000/admin]
 
 # Q&A
 
