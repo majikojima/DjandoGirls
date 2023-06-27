@@ -20,6 +20,12 @@ reference
     - [A](#a-6)
   - [css更新したのに304になる](#css更新したのに304になる)
     - [A](#a-7)
+  - [djangoのモデル、URL、ビュー、テンプレートの図](#djangoのモデルurlビューテンプレートの図)
+    - [A](#a-8)
+  - [djangoのモデル、URL、ビュー、テンプレートの作成手順](#djangoのモデルurlビューテンプレートの作成手順)
+    - [A](#a-9)
+  - [{{}} of Django](#-of-django)
+    - [A](#a-10)
 
 # Usage
 
@@ -182,3 +188,135 @@ blog.cssファイルを更新したにも関わらず、変更がブラウザに
 3. **開発サーバーを再起動する**： 開発中に静的ファイルが更新されない場合、Django開発サーバーを再起動することで問題が解決する場合があります。
 
 これらの手順の後でも問題が解決しない場合は、他の要因（例えば、CSSファイルへのパスが間違っているなど）が問題を引き起こしている可能性があります。その場合は、さらに詳細な情報が必要となります。
+
+## djangoのモデル、URL、ビュー、テンプレートの図
+
+### A
+
+Djangoのモデル、URL、ビュー、テンプレートの動きは以下のような流れで表現できます。以下はmermaid形式の図です。
+
+```mermaid
+graph TD
+    A[User Access URL] --> B{URL Dispatcher}
+    B --> C[View Function]
+    C --> D[Model]
+    D --> C
+    C --> E[Template]
+    E --> F[Rendered HTML]
+    F --> A
+```
+
+この図の解釈は以下の通りです：
+
+1. ユーザーがウェブアプリケーションの特定のURLにアクセスします。
+
+2. DjangoのURLディスパッチャーは、そのURLが何に対応するか決定します。これはURLconf（URL設定）に基づいて行われます。
+
+3. URLディスパッチャーは対応するビュー関数を呼び出します。
+
+4. ビュー関数は必要なデータを取得するためにモデルを使います。この時、データベースとの対話が行われます。
+
+5. ビューは取得したデータをテンプレートと一緒に渡します。
+
+6. テンプレートは渡されたデータを使ってHTMLを生成します。
+
+7. 最終的に生成されたHTMLがユーザーのブラウザに表示されます。
+
+以上が基本的なDjangoの動作の流れとなります。
+
+## djangoのモデル、URL、ビュー、テンプレートの作成手順
+
+### A
+
+Djangoでウェブアプリケーションを作る際の基本的な手順は以下のようになります。ここでは、ブログポストを表示するシンプルなアプリケーションを作成する例を使用します。
+
+1. **モデルの作成**
+
+    まずはデータベースのテーブルを定義します。それぞれのテーブルはDjangoの`models.Model`を継承したクラスとして定義され、クラスのフィールドがテーブルの列に対応します。例えば、ブログポストを表現するためのモデルは以下のようになります：
+
+    ```python
+    from django.db import models
+
+    class Post(models.Model):
+        title = models.CharField(max_length=200)
+        content = models.TextField()
+        pub_date = models.DateTimeField('date published')
+    ```
+
+2. **モデルのマイグレーション**
+
+    モデルを作成したら、そのモデルをデータベースに反映するためにマイグレーションを作成し、適用します：
+
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+
+3. **URLの設定**
+
+    次に、ビューをブラウザからアクセス可能にするためにURLを設定します。これは`urls.py`ファイルで行います：
+
+    ```python
+    from django.urls import path
+
+    from . import views
+
+    urlpatterns = [
+        path('', views.post_list, name='post_list'),
+    ]
+    ```
+
+4. **ビューの作成**
+
+    ビューは、特定のURLがリクエストされたときに何を行うかを決定します。この場合、ビューは`Post`モデルからデータを取得し、それをテンプレートに渡します：
+
+    ```python
+    from django.shortcuts import render
+    from .models import Post
+
+    def post_list(request):
+        posts = Post.objects.order_by('pub_date')
+        return render(request, 'blog/post_list.html', {'posts': posts})
+    ```
+
+5. **テンプレートの作成**
+
+    最後に、ビューが使用するテンプレートを作成します。これはHTMLファイルで、Djangoテンプレート言語を使用して動的な部分を記述します：
+
+    ```html
+    {% for post in posts %}
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.content }}</p>
+    {% endfor %}
+    ```
+
+以上が基本的な流れです。この一連の流れを通じて、データベースからデータを取得し、それを適切にフォーマットしてユーザーに表示するウェブページを作成することができます。
+
+## {{}} of Django
+
+### A
+
+Djangoの`{{}}`記法は、Djangoテンプレートエンジンに特有のもので、テンプレート中に変数を表示するための構文です。具体的には、ビューからテンプレートに渡された変数の値をHTML中に挿入する際に使用します。
+
+例えば、次のようなビュー関数があったとします。
+
+```python
+def post_list(request):
+    posts = Post.objects.all()
+    return render(request, 'blog/post_list.html', {'posts': posts})
+```
+
+ここでは`posts`という名前の変数にPostモデルの全てのオブジェクトを格納し、それを`blog/post_list.html`テンプレートに渡しています。
+
+そして、このテンプレート中で`posts`変数を表示するために`{{}}`記法を使用します。
+
+```html
+{% for post in posts %}
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+{% endfor %}
+```
+
+上記のコードでは、`post.title`や`post.content`など、`posts`変数に格納されている各Postオブジェクトのフィールドを表示するために`{{}}`を使っています。
+
+なお、`{{}}`記法をGoogleなどで検索する際は、「Django テンプレート 変数」といったキーワードを使用すると、関連する情報が見つけやすくなります。一般的な記号や特殊文字だけで検索を行うと、検索エンジンがそれを無視してしまうことがあります。
