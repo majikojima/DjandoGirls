@@ -3,6 +3,8 @@ reference
 [https://tutorial.djangogirls.org/ja/django/]
 
 - [Usage](#usage)
+  - [local](#local)
+  - [pythonanywhere](#pythonanywhere)
 - [Q\&A](#qa)
   - [python3 -m venv myvenv](#python3--m-venv-myvenv)
     - [A](#a)
@@ -28,6 +30,8 @@ reference
     - [A](#a-10)
 
 # Usage
+
+## local
 
 ```bash
 $ python3 -m venv myvenv
@@ -60,6 +64,16 @@ reference:
 
 URL:
 [http://127.0.0.1:8000/admin]
+
+## pythonanywhere
+
+```bash
+$ git pull
+
+$ workon <your-pythonanywhere-domain>.pythonanywhere.com
+
+$ python manage.py collectstatic
+```
 
 # Q&A
 
