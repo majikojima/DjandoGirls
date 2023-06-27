@@ -3,9 +3,19 @@
         <title>kanikanipeace's blog</title>
     </head>
     <body>
+
         <div>
             <h1><a href="/">kanikanipeace's blog</a></h1>
         </div>
+
+        {% for post in posts %}
+            <div>
+                <p>published: {{ post.published_date }}</p>
+                <h2><a href="">{{ post.title }}</a></h2>
+                <p>{{ post.text|linebreaksbr }}</p>
+                {{ post }}
+            </div>
+        {% endfor %}
 
         <div>
             <p>published: 14.06.2014, 12:14</p>
