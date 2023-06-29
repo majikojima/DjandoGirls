@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maze Game Controls</title>
+</head>
+<body>
+    <h1>Maze Game Controls</h1>
+    <button onclick="movePlayer('up')">Up</button>
+    <button onclick="movePlayer('down')">Down</button>
+    <button onclick="movePlayer('left')">Left</button>
+    <button onclick="movePlayer('right')">Right</button>
+
+    <script>
+    function movePlayer(direction) {
+        // This is a simplification. In reality, you would use AJAX to send a request to the server
+        // to update the player's position, then update the display based on the server's response.
+        fetch(`/move_player/?direction=${direction}`)
+    }
+    </script>
+</body>
+</html>
